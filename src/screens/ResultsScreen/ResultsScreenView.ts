@@ -103,7 +103,8 @@ export class ResultsScreenView implements View {
 		} else {
 			let text = "Top Scores:\n";
 			entries.forEach((entry, index) => {
-				text += `${index + 1}. ${entry.score} - ${entry.timestamp}\n`;
+				console.log(entry);
+				text += `${index + 1}. ${entry.score} - ${entry.time}\n`;
 			});
 			this.leaderboardText.text(text);
 		}

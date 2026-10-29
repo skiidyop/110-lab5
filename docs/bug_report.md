@@ -1,50 +1,7 @@
 # Lemon Clicker Bug Report
 
 **Name: Carmen Tan**<br>
-**Tickets solved: 1, 2, 3** <!-- e.g. 1, 2, 3, 5, 6 (at least five) -->
-
-Copy the template below once for each ticket you solved. 
-
----
-
-## Ticket <number>: <ticket title>
-
-### Actual cause
-
-<!-- Which file and function was the bug in, and what was wrong with the code?
-     Explain why that code produced the behavior described in the ticket. -->
-
-**File / function:**
-
-**What was wrong:**
-
-### Fix
-
-<!-- What did you change, and why does that change fix the problem? -->
-
-### How did you find it?
-
-#### Hypothesis testing
-
-**What hypothesis ultimately led you to identify the buggy code, and why?**
-
-#### Backward tracing
-
-<!-- Start from the symptom you saw and work backwards, one step at a time,
-     until you reach the buggy line. For each step, note where you looked
-     and what you saw there. Add steps as needed. -->
-
-1. **Symptom:** <!-- what you saw, e.g. text on screen, console error -->
-2. **Traced back to:** <!-- where that came from, e.g. a function, a request in the Network tab, a server log -->
-3. **Traced back to:**
-4. **Buggy code:** <!-- the file, function and line where the trace ended -->
-
-<!-- It is okay to use your judgement here in limiting the number of traceback steps. We want to understand your 
-    reasoning for how you discovered where the bug was -->
-
-### Confirming the fix
-
-<!-- How did you confirm the problem is gone? -->
+**Tickets solved: 1, 2, 3, 4, 5** <!-- e.g. 1, 2, 3, 5, 6 (at least five) -->
 
 
 ## Ticket 1: Stats always say "Stats unavailable"
@@ -189,3 +146,29 @@ I added the parantheses to the stopTimer() call. This fixed the problem because 
 ### Confirming the fix
 
 The results screens only shows once and the ending game bell no longer replays forever.
+
+---
+
+## Ticket 5: Leaderboard dates show "undefined"
+
+### Actual cause
+
+
+**File / function:** ResultScreenView.ts / updateLeaderboard()
+
+**What was wrong:** The function was trying to access entry.timestamp, but the actual property name was entry.time. Since timestamp did not exist in the entry object, the function was getting undefined instead of the correct time value.
+
+### Fix
+
+The function was trying to access entry.timestamp, but the actual property name was entry.time. Since timestamp did not exist in the entry object, the function was getting undefined instead of the correct time value.
+<!-- What did you change, and why does that change fix the problem? -->
+
+### How did you find it?
+
+#### Hypothesis testing
+
+**What hypothesis ultimately led you to identify the buggy code, and why?**
+The hypothesis that ultimately led me to identify the buggy code was that the function was trying to access a property that did not exist in the leaderboard entries. I looked at the updateLeaderboard() function in ResultScreenView.ts to see how it was accessing and displaying the leaderboard data. To test my hypothesis, I used console.log() to print each entry and inspect its properties. I noticed that each entry had a property named time instead of timestamp, which confirmed that the function was accessing the wrong property.
+
+### Confirming the fix
+The leaderboard now shows the timestamps instead of undefined.
