@@ -1,7 +1,7 @@
 # Lemon Clicker Bug Report
 
 **Name: Carmen Tan**<br>
-**Tickets solved: 1** <!-- e.g. 1, 2, 3, 5, 6 (at least five) -->
+**Tickets solved: 1, 2, 3** <!-- e.g. 1, 2, 3, 5, 6 (at least five) -->
 
 Copy the template below once for each ticket you solved. 
 
@@ -123,3 +123,30 @@ After reloading the menu screen, the stats appear under the play button instead 
 ### Confirming the fix
 
 After reloading the page, the best score was no longer displaying 0. To confirm it was actually showing the best score, I modified one of the objects in leaderboard.json to have a score greater than all the others. Reloading the page showed this updated best score, which confirmed the fix.
+
+## Ticket 3: The lemon only lands in four spots
+
+### Actual cause
+
+<!-- Which file and function was the bug in, and what was wrong with the code?
+     Explain why that code produced the behavior described in the ticket. -->
+
+**File / function:** GameScreenView.ts / randomizeLemonPosition()
+
+**What was wrong:** When calculating the random X and Y positions of the lemon, the function was immediately rounding the result of Math.random(). Since Math.random() generates a decimal between 0 and 1, rounding it would always result in either 0 or 1. This value was then multiplied by the canvas dimensions and added to the minimum position values. As a result, the lemon could only appear at the minimum or maximum positions instead of anywhere within the canvas bounds.
+
+### Fix
+
+I moved Math.round() to encapsulate the entire calculation instead of just Math.random(). This fixed the problem because the random decimal was now scaled to fit the canvas bounds before being rounded. As a result, the lemon can now appear at any integer position within the specified range instead of only at the minimum or maximum positions.
+<!-- What did you change, and why does that change fix the problem? -->
+
+### How did you find it?
+
+#### Hypothesis testing
+
+**What hypothesis ultimately led you to identify the buggy code, and why?**
+The hypothesis that ultimately led me to identify the buggy code was that the math used to calculate the random positions of the lemon was incorrect. On the game screen, I noticed that the lemon was only spawning in the four corners of the canvas. This made me think that the random position calculations were only producing the minimum or maximum values for the X and Y coordinates. I looked for the code that was generating the lemon's random spawn locations and found the randomizeLemonPosition() function in GameScreenView.ts. After looking at the calculations, and I noticed that Math.random() was being rounded before being scaled.
+
+### Confirming the fix
+
+Replaying the game, the lemon spawns randomly within the correct bounds.
