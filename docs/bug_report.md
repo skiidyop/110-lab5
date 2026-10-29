@@ -84,6 +84,7 @@ The hypothesis that ultimately led me to identify the buggy code was that maybe 
 
 After reloading the menu screen, the stats appear under the play button instead of Stats unavailable.
 
+---
 
 ## Ticket 2: Best score always shows 0
 
@@ -124,6 +125,8 @@ After reloading the menu screen, the stats appear under the play button instead 
 
 After reloading the page, the best score was no longer displaying 0. To confirm it was actually showing the best score, I modified one of the objects in leaderboard.json to have a score greater than all the others. Reloading the page showed this updated best score, which confirmed the fix.
 
+---
+
 ## Ticket 3: The lemon only lands in four spots
 
 ### Actual cause
@@ -150,3 +153,39 @@ The hypothesis that ultimately led me to identify the buggy code was that the ma
 ### Confirming the fix
 
 Replaying the game, the lemon spawns randomly within the correct bounds.
+
+---
+
+## Ticket 4: Stuck on the Game Over screen
+
+### Actual cause
+
+<!-- Which file and function was the bug in, and what was wrong with the code?
+     Explain why that code produced the behavior described in the ticket. -->
+
+**File / function:** GameScreenController.ts / endGame()
+
+**What was wrong:** The function was trying to call stopTimer() on the game timer interval, but the parantheses were omitted. This caused the timer to keep running. Since the timer would check every second that timeRemaining was less than or equal to 0, once the timeRemaining dropped below 0, it would keep running every second and call endGame() over and over. endGame() switches the screen to the results screen, so everytime it is called it switches to the results screen which is why you get stuck.
+
+### Fix
+
+I added the parantheses to the stopTimer() call. This fixed the problem because now endGame is called only once, and stops the timer before it's called again. 
+
+### How did you find it?
+
+#### Backward tracing
+
+<!-- Start from the symptom you saw and work backwards, one step at a time,
+     until you reach the buggy line. For each step, note where you looked
+     and what you saw there. Add steps as needed. -->
+
+1. **Symptom:** It looked as if the results screen was constantly refreshing. The leaderboard was updating and being filled with the score as well.
+2. **Traced back to:** ResultsScreenController showResultsFromServer() I knew this function was being called repeatedly because it is the function responsible for both updating the leadboard and showing the results view.
+3. **Traced back to:** main.ts switchToScreen() calls ResultsScreenController
+4. **Traced back to:** types.ts interface ScreenSwitcher calls switchToScreen()
+5. **Traced back to:** I knew that GameScreenController.ts was responsible for switching to the Results Screen after the game was over, which took me to endGame()
+4. **Buggy code:** GameScreenController.ts endGame() Line 87
+
+### Confirming the fix
+
+The results screens only shows once and the ending game bell no longer replays forever.
